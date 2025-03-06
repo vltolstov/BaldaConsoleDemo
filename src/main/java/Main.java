@@ -18,6 +18,7 @@ public class Main {
             gameInitialize();
             if (GAME_STATUS) {
                 setWord();
+                setRandomOpenLetters();
             }
         } while (GAME_STATUS);
     }
@@ -50,6 +51,21 @@ public class Main {
             WORD_WITH_OPEN_LETTERS += "-";
         }
         System.out.println(WORD.toString());
+        System.out.println(WORD_WITH_OPEN_LETTERS);
+    }
+
+    public static void setRandomOpenLetters(){
+        int wordActualSize = WORD.size();
+        int firstOpenLetterIndex;
+        int secondOpenLetterIndex;
+        do {
+            firstOpenLetterIndex = random.nextInt(wordActualSize);
+            secondOpenLetterIndex = random.nextInt(wordActualSize);
+        } while (firstOpenLetterIndex == secondOpenLetterIndex);
+        StringBuilder stringBuilder = new StringBuilder(WORD_WITH_OPEN_LETTERS);
+        stringBuilder.setCharAt(firstOpenLetterIndex, WORD.get(firstOpenLetterIndex));
+        stringBuilder.setCharAt(secondOpenLetterIndex, WORD.get(secondOpenLetterIndex));
+        WORD_WITH_OPEN_LETTERS = stringBuilder.toString();
         System.out.println(WORD_WITH_OPEN_LETTERS);
     }
 }
