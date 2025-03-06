@@ -1,13 +1,10 @@
-import org.w3c.dom.ls.LSOutput;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     private static String START_COMMAND = "старт";
     private static ArrayList<Character> WORD;
-    private static int WORD_SIZE = 3;
+    private static int WORD_MIN_SIZE = 3;
     private static String OPEN_LETTERS;
     private static boolean GAME_STATUS;
     private static int ERROR_COUNT;
@@ -37,11 +34,11 @@ public class Main {
 
     public static void setWord(){
         //слово без пробелов, не пустое, >= 3 символа
-        System.out.println("Загадайте слово (не менее " + (WORD_SIZE - 1) + " букв)");
+        System.out.println("Загадайте слово (не менее " + (WORD_MIN_SIZE - 1) + " букв)");
         String userWord = "";
-        while (userWord.isEmpty() || userWord.contains(" ") || userWord.length() < WORD_SIZE){
+        while (userWord.isEmpty() || userWord.contains(" ") || userWord.length() < WORD_MIN_SIZE){
             userWord = scanner.nextLine().toLowerCase();
-            if(userWord.isEmpty() || userWord.contains(" ") || userWord.length() < WORD_SIZE){
+            if(userWord.isEmpty() || userWord.contains(" ") || userWord.length() < WORD_MIN_SIZE){
                 System.out.println("Неподходящее слово. Загадайте другое");
             }
         }
