@@ -1,15 +1,17 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     private static String START_COMMAND = "старт";
     private static ArrayList<Character> WORD;
     private static int WORD_MIN_SIZE = 3;
-    private static String OPEN_LETTERS;
+    private static String WORD_WITH_OPEN_LETTERS;
     private static boolean GAME_STATUS;
     private static int ERROR_COUNT;
 
     private static Scanner scanner = new Scanner(System.in);
+    private static Random random = new Random();
 
     public static void main(String[] args) {
         do {
@@ -27,6 +29,7 @@ public class Main {
             GAME_STATUS = true;
             ERROR_COUNT = 0;
             WORD = new ArrayList<>();
+            WORD_WITH_OPEN_LETTERS = "";
         } else {
             GAME_STATUS = false;
         }
@@ -44,7 +47,9 @@ public class Main {
         }
         for(int i = 0; i < userWord.length(); i++){
             WORD.add(i, userWord.charAt(i));
+            WORD_WITH_OPEN_LETTERS += "-";
         }
         System.out.println(WORD.toString());
+        System.out.println(WORD_WITH_OPEN_LETTERS);
     }
 }
