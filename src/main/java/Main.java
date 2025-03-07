@@ -10,75 +10,129 @@ public class Main {
     private static String START_COMMAND = "старт";
     private static List<String> LIBRARY;
     private static String SECRET_WORD;
-    private static ArrayList<Character> SECRET_LETTERS;
-    private static String WORD_WITH_OPEN_LETTERS;
+    private static String GAME_FIELD;
     private static boolean GAME_STATUS;
+    private static boolean END_GAME_STATUS;
     private static int ERROR_COUNT;
+    private static List<String> WRONG_LETTERS;
 
     private static Scanner scanner = new Scanner(System.in);
     private static Random random = new Random();
 
     public static void main(String[] args) {
         do {
-            gameInitialize();
+            startGameInitialize();
             if (GAME_STATUS) {
                 setWord();
+                resetGameField();
                 setRandomOpenLetters();
+                System.out.println(GAME_FIELD);
+                while (!END_GAME_STATUS) {
+                    playerTurn();
+                    System.out.println(GAME_FIELD);
+                    checkGameStatus();
+                }
+                viewResult();
             }
         } while (GAME_STATUS);
     }
 
-    public static void gameInitialize(){
+    public static void startGameInitialize() {
         System.out.println("Для старта новой игры введите 'Старт'. Для отмены игры нажмите Enter: ");
         String commandFromUserInput = scanner.nextLine().toLowerCase();
-        if(commandFromUserInput.equals(START_COMMAND)){
+        if (commandFromUserInput.equals(START_COMMAND)) {
+            ERROR_COUNT = 6;
+            WRONG_LETTERS = new ArrayList<>();
+            GAME_FIELD = "";
             GAME_STATUS = true;
-            ERROR_COUNT = 0;
-            SECRET_LETTERS = new ArrayList<>();
-            WORD_WITH_OPEN_LETTERS = "";
-
+            END_GAME_STATUS = false;
         } else {
             GAME_STATUS = false;
         }
     }
 
-    public static void setWord(){
+    public static void setWord() {
         try {
             LIBRARY = Files.readAllLines(Paths.get("src/main/resources/words.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         int randomIndex = random.nextInt(LIBRARY.size());
         SECRET_WORD = LIBRARY.get(randomIndex);
+    }
 
-        for(int i = 0; i < SECRET_WORD.length(); i++){
-            SECRET_LETTERS.add(i, SECRET_WORD.charAt(i));
-            WORD_WITH_OPEN_LETTERS += "-";
+    public static void resetGameField() {
+        for (int i = 0; i < SECRET_WORD.length(); i++) {
+            GAME_FIELD += "-";
         }
-        System.out.println(SECRET_LETTERS.toString());
-        System.out.println(WORD_WITH_OPEN_LETTERS);
     }
 
-    public static void setRandomOpenLetters(){
-        int wordActualSize = SECRET_LETTERS.size();
-        int firstOpenLetterIndex;
-        int secondOpenLetterIndex;
+    public static void setGameField(List<Integer> indexes) {
+        StringBuilder gameField = new StringBuilder(GAME_FIELD);
+        for (Integer index : indexes) {
+            gameField.setCharAt(index, SECRET_WORD.charAt(index));
+        }
+        GAME_FIELD = gameField.toString();
+    }
+
+    public static void setRandomOpenLetters() {
+        Character firstLetter;
+        Character secondLetter;
         do {
-            firstOpenLetterIndex = random.nextInt(wordActualSize);
-            secondOpenLetterIndex = random.nextInt(wordActualSize);
-        } while (firstOpenLetterIndex == secondOpenLetterIndex);
-        StringBuilder stringBuilder = new StringBuilder(WORD_WITH_OPEN_LETTERS);
-        stringBuilder.setCharAt(firstOpenLetterIndex, SECRET_LETTERS.get(firstOpenLetterIndex));
-        stringBuilder.setCharAt(secondOpenLetterIndex, SECRET_LETTERS.get(secondOpenLetterIndex));
-        WORD_WITH_OPEN_LETTERS = stringBuilder.toString();
-        System.out.println(WORD_WITH_OPEN_LETTERS);
+            int randomFirstIndex = random.nextInt(SECRET_WORD.length());
+            int randomSecondIndex = random.nextInt(SECRET_WORD.length());
+            firstLetter = SECRET_WORD.charAt(randomFirstIndex);
+            secondLetter = SECRET_WORD.charAt(randomSecondIndex);
+        } while (firstLetter.equals(secondLetter));
+
+        List<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < SECRET_WORD.length(); i++) {
+            if (firstLetter == SECRET_WORD.charAt(i) || secondLetter == SECRET_WORD.charAt(i)) {
+                indexes.add(i);
+            }
+        }
+        setGameField(indexes);
     }
 
-    public static void inputUserLetter(){
-
+    public static void playerTurn() {
+        Character userLetter = scanner.next().charAt(0);
+        if (GAME_FIELD.contains(userLetter.toString())) {
+            errorNotify("Такая буква уже есть в слове.");
+        } else if (!GAME_FIELD.contains(userLetter.toString()) && SECRET_WORD.contains(userLetter.toString())) {
+            List<Integer> indexes = new ArrayList<Integer>();
+            for (int i = 0; i < SECRET_WORD.length(); i++) {
+                if (userLetter == SECRET_WORD.charAt(i)) {
+                    indexes.add(i);
+                }
+            }
+            setGameField(indexes);
+        } else {
+            if (!WRONG_LETTERS.contains(userLetter.toString())) {
+                ERROR_COUNT--;
+                errorNotify("Такой буквы в слове нет.");
+                WRONG_LETTERS.add(userLetter.toString());
+            } else {
+                errorNotify("Такую букву вы уже вводили и ее нет в слове.");
+            }
+        }
     }
 
-    public static void checkLetter(){
+    public static void errorNotify(String message) {
+        System.out.println(message + " " + "Осталось попыток: " + ERROR_COUNT);
+    }
 
+    public static void checkGameStatus() {
+        if (!GAME_FIELD.contains("-") || ERROR_COUNT == 0) {
+            END_GAME_STATUS = true;
+        }
+    }
+
+    public static void viewResult() {
+        if (!GAME_FIELD.contains("-") && ERROR_COUNT != 0) {
+            System.out.println("Победа!");
+        } else {
+            System.out.println("Вы проиграли. Попробуйте еще раз. Загаданное слово: " + SECRET_WORD);
+        }
     }
 }
