@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    private static String START_COMMAND = "старт";
+    private static final String START_COMMAND = "старт";
     private static List<String> LIBRARY;
     private static String SECRET_WORD;
     private static String GAME_FIELD;
@@ -86,7 +86,7 @@ public class Main {
             secondLetter = SECRET_WORD.charAt(randomSecondIndex);
         } while (firstLetter.equals(secondLetter));
 
-        List<Integer> indexes = new ArrayList<Integer>();
+        List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < SECRET_WORD.length(); i++) {
             if (firstLetter == SECRET_WORD.charAt(i) || secondLetter == SECRET_WORD.charAt(i)) {
                 indexes.add(i);
@@ -96,11 +96,11 @@ public class Main {
     }
 
     public static void playerTurn() {
-        Character userLetter = scanner.next().charAt(0);
-        if (GAME_FIELD.contains(userLetter.toString())) {
+        char userLetter = scanner.next().charAt(0);
+        if (GAME_FIELD.contains(Character.toString(userLetter))) {
             errorNotify("Такая буква уже есть в слове.");
-        } else if (!GAME_FIELD.contains(userLetter.toString()) && SECRET_WORD.contains(userLetter.toString())) {
-            List<Integer> indexes = new ArrayList<Integer>();
+        } else if (!GAME_FIELD.contains(Character.toString(userLetter)) && SECRET_WORD.contains(Character.toString(userLetter))) {
+            List<Integer> indexes = new ArrayList<>();
             for (int i = 0; i < SECRET_WORD.length(); i++) {
                 if (userLetter == SECRET_WORD.charAt(i)) {
                     indexes.add(i);
@@ -108,10 +108,10 @@ public class Main {
             }
             setGameField(indexes);
         } else {
-            if (!WRONG_LETTERS.contains(userLetter.toString())) {
+            if (!WRONG_LETTERS.contains(Character.toString(userLetter))) {
                 ERROR_COUNT--;
                 errorNotify("Такой буквы в слове нет.");
-                WRONG_LETTERS.add(userLetter.toString());
+                WRONG_LETTERS.add(Character.toString(userLetter));
             } else {
                 errorNotify("Такую букву вы уже вводили и ее нет в слове.");
             }
