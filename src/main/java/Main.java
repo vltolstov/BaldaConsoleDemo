@@ -23,7 +23,8 @@ public class Main {
         do {
             startGameInitialize();
             if (GAME_STATUS) {
-                setWord();
+                //setWord();
+                SECRET_WORD = "трость";
                 resetGameField();
                 setRandomOpenLetters();
                 System.out.println(GAME_FIELD);
@@ -38,7 +39,7 @@ public class Main {
     }
 
     public static void startGameInitialize() {
-        System.out.println("Для старта новой игры введите 'Старт'. Для отмены игры нажмите Enter: ");
+        System.out.println("Для старта новой игры введите 'Старт'. Для отмены игры введите любой символ");
         String commandFromUserInput = scanner.nextLine().toLowerCase();
         if (commandFromUserInput.equals(START_COMMAND)) {
             ERROR_COUNT = 6;
@@ -46,7 +47,7 @@ public class Main {
             GAME_FIELD = "";
             GAME_STATUS = true;
             END_GAME_STATUS = false;
-        } else {
+        } else if (!commandFromUserInput.isEmpty()) {
             GAME_STATUS = false;
         }
     }
