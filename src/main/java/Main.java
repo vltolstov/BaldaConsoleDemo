@@ -23,8 +23,7 @@ public class Main {
         do {
             startGameInitialize();
             if (GAME_STATUS) {
-                //setWord();
-                SECRET_WORD = "трость";
+                setWord();
                 resetGameField();
                 setRandomOpenLetters();
                 System.out.println(GAME_FIELD);
